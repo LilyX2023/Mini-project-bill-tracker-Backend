@@ -16,8 +16,13 @@ from pathlib import Path
 env=environ.Env()
 environ.Env.read_env()
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get("SECRET_KEY", "localkey2024") #replace the SECRET_KEY VARIABLE with this. 
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,9 +32,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-c!6v37s@*s63wm&!4hspto+$6m28-vft8))j1on-ejdag=(h71'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =  'RENDER' not in os.environ  # replace the DEBUG variable with this. 
 
 ALLOWED_HOSTS = []
+
+#right below the ALLOW_HOST  variable add this.
+## Handling Allowed Hosts on Render
+## adds the render.com hostname to be in ALLOWED_HOSTS
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -43,18 +55,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'billsBE.apps.BillsbeConfig',
     'rest_framework',
-
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware", #add this!!!!!!
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#Below variable: MIDDLEWARES add this variable
+CORS_ALLOW_ALL_ORIGINS = True ## Variable CORS_ALLOW_ALL_ORIGINS is set to True to allow unrestricted access to the API.
 
 ROOT_URLCONF = 'bills.urls'
 
